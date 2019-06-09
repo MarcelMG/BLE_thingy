@@ -5,7 +5,7 @@ The main microcontroller used is an AVR ATtiny3216 from the new tiny-1 series.
 
 BLE connectivity is provided by a RN4871-I RF module.
 
-There is an ADXL345 3-axis accelerometer onboard for motion detection. It sits on a GY-291 breakout-board, which is very cheap and avoids hand-soldering the tiny package of the ADXL345 which is virtually impossible without hot air / reflow oven. The GY-291 has to be slightly modified, see /hardware/GY-291-mod.txt for instructions.
+There is an ADXL345 3-axis accelerometer onboard for motion detection. It sits on a GY-291 breakout-board, which is very cheap and avoids hand-soldering the tiny package of the ADXL345 which is virtually impossible without hot air / reflow oven. The GY-291 has to be slightly modified, see [here](https://github.com/MarcelMG/BLE_thingy/blob/master/hardware/GY-291_mod.md) for further instructions.
 
 A pushbutton and a user LED are also onboard.
 
