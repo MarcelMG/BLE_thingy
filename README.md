@@ -11,7 +11,7 @@ A pushbutton and a user LED are also onboard.
 
 On the back of the PCB, a holder for a CR2032 coin cell is mounted.
 
-![front_view](https://github.com/MarcelMG/BLE_thingy/raw/master/hardware/front_view.jpg){:height="400px" width="400px"}
-![back_view](https://github.com/MarcelMG/BLE_thingy/raw/master/hardware/back_view.jpg){:height="400px" width="400px"}
+![front_view](https://github.com/MarcelMG/BLE_thingy/raw/master/hardware/front_view.jpg)
+![back_view](https://github.com/MarcelMG/BLE_thingy/raw/master/hardware/back_view.jpg)
 (c) 2019 Marcel Meyer-Garcia
 <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />This work (hardware and software) is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>. 
