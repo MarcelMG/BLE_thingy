@@ -35,8 +35,8 @@ void dbg_print_str(char* str){
 	while(*str) dbg_print_char(*str++);
 }
 
+// wait for a specific character in the RN4871's response and print the response for debugging
 void RN4871_waitfor(char endchar){
-	// get response, should be: "AOK"
 	char str[10];
 	char* str_ptr = str;
 	*str_ptr = USART0_readChar();
@@ -52,16 +52,16 @@ void RN4871_waitfor(char endchar){
 char UUID[32] = "123456789ABCDEF123456789ABCDEF12";
 
 void iBeacon_advertise(uint16_t minor, uint16_t major, uint8_t TxPower){
-	printf("IB,Z\r");
-	RN4871_waitfor('K');
-	printf("IB,FF,");
-	printf("4C000215");
-	printf(UUID);
-	printf("%.4X", minor);
-	printf("%.4X", major);
-	printf("%.2X", TxPower);
-	putchar('\r');
-	RN4871_waitfor('K');
+	printf("IB,Z\r"); // clear advertisement content
+	RN4871_waitfor('K'); // wait for "AOK" response
+	printf("IB,FF,"); // set custom manufacturer (FF) advertisement content
+	printf("4C000215"); // iBeacon preamble
+	printf(UUID); // device UUID
+	printf("%.4X", minor); // minor (2 bytes, i.e. uint16_t)
+	printf("%.4X", major); // major (2 bytes, i.e. uint16_t)
+	printf("%.2X", TxPower); // TxPower (1 byte, i.e. uint8_t) calibration value for distance calculation
+	putchar('\r'); // end "IB,FF,..." command with carriage return 
+	RN4871_waitfor('K'); // wait for "AOK" response
 }
 
 int main(void)
