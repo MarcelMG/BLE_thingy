@@ -9,7 +9,20 @@
 // interrupt variables
 volatile bool activity = false;
 volatile bool rtc_wakeup = false;
+volatile bool pushbutton_pressed = false;
 volatile uint8_t err = 0;
+
+// pushbutton interrupt handler, wakes CPU from power-down sleep mode
+ISR(PORTB_PORT_vect){
+	if(PORTB.INTFLAGS != PIN5_bm){
+		err = 3; // error: wrong pin has triggered the interrupt
+	}else if( !(PORTB.IN & PIN5_bm) ){ // a falling edge has triggered the interrupt (button has been pressed)
+			pushbutton_pressed = true;
+	} // else a rising edge has triggered the interrupt (releasing the button) and we do nothing
+
+	PORTB.INTFLAGS = PIN5_bm; // clear interrupt flag
+}
+
 
 // ADXL345 interrupt handler, wakes CPU from power-down sleep mode
 ISR(PORTA_PORT_vect){
@@ -68,6 +81,10 @@ int main(void)
 	PORTC.DIRSET = PIN2_bm;	// pin PC2 (LED) as output
 	PORTC.OUTCLR = PIN2_bm; // LED off
 	
+	/* ONBOARD PUSHBUTTON SETUP */
+	PORTB.DIRCLR = PIN5_bm; // config pin PB5 as input
+	PORTB.PIN5CTRL = PORT_PULLUPEN_bm | PORT_ISC_BOTHEDGES_gc; // enable pull-up and interrupt on both edges (NOTE: only LEVEL and BOTHEDGES can wake the µC from sleep, so we can't use falling edge)
+	
 	/* BLE BEACON SETUP */
 	RN4871_init();
 	RN4871_setup_beacon(640); // setup Beacon with 1s advertisement interval
@@ -87,11 +104,10 @@ int main(void)
 	// set unused pins as inputs with pull-up and disable input buffer to reduce power consumption
 	PORTA.DIRCLR = PIN6_bm;
 	PORTA.PIN6CTRL = PORT_PULLUPEN_bm | PORT_ISC_INPUT_DISABLE_gc;
-	PORTB.DIRCLR = PIN0_bm | PIN1_bm | PIN4_bm | PIN5_bm;
+	PORTB.DIRCLR = PIN0_bm | PIN1_bm | PIN4_bm;
 	PORTB.PIN0CTRL = PORT_PULLUPEN_bm | PORT_ISC_INPUT_DISABLE_gc;
 	PORTB.PIN1CTRL = PORT_PULLUPEN_bm | PORT_ISC_INPUT_DISABLE_gc;
 	PORTB.PIN4CTRL = PORT_PULLUPEN_bm | PORT_ISC_INPUT_DISABLE_gc;
-	PORTB.PIN5CTRL = PORT_PULLUPEN_bm | PORT_ISC_INPUT_DISABLE_gc;
 	PORTC.DIRCLR = PIN3_bm;
 	PORTC.PIN3CTRL = PORT_PULLUPEN_bm | PORT_ISC_INPUT_DISABLE_gc;
 	BOD.CTRLA &=~(BOD_SLEEP0_bm | BOD_SLEEP1_bm); // disable brown-out-detector in sleep mode to reduce power consumption
@@ -100,7 +116,7 @@ int main(void)
 	while(RTC.STATUS); // wait until RTC is synchronized
 	RTC.CLKSEL = RTC_CLKSEL_INT1K_gc; // select 1024 Hz clock from internal 32kHz oscillator
 	RTC.PITINTCTRL = RTC_PI_bm; // enable periodic interrupt
-	RTC.PITCTRLA = RTC_PERIOD_CYC1024_gc | RTC_PITEN_bm;	// select interrupt period and enable PIT
+	RTC.PITCTRLA = RTC_PERIOD_CYC4096_gc | RTC_PITEN_bm;	// select interrupt period and enable PIT
 		
 	/* SLEEP MODE SETUP */	
 	sei(); // globally enable interrupts on the µC
@@ -114,8 +130,12 @@ int main(void)
 	/* MAIN LOOP */
 	while (1){
 		sleep_cpu(); // put ATtiny3216 in sleep mode (again)
-		/* if either the RTC or the accelerometer interrupt wake up the CPU, we continue here */
-		if(activity){ // accelerometer interrupt has caused wakeup
+		/* if either the RTC, the pushbutton or the accelerometer interrupt wake up the CPU, we continue here */
+		if(pushbutton_pressed){
+			major = 0xEEEE;
+			minor = 0xEEEE;
+			pushbutton_pressed = false;
+		}else if(activity){ // accelerometer interrupt has caused wakeup
 			major = 0xFFFF;
 			minor = 0xFFFF;
 			activity = false;
@@ -124,7 +144,9 @@ int main(void)
 			minor = measure_VCC();
 			rtc_wakeup = false;
 		}
+		PORTC.OUTSET = PIN2_bm; // LED on
 		RN4871_wakeup();
+		PORTC.OUTCLR = PIN2_bm; // LED off
 		iBeacon_advertise(minor, major, txpwr); // advertise as Beacon
 		RN4871_sleep();
 	}
