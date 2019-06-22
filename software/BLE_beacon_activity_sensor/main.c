@@ -116,7 +116,7 @@ int main(void)
 	while(RTC.STATUS); // wait until RTC is synchronized
 	RTC.CLKSEL = RTC_CLKSEL_INT1K_gc; // select 1024 Hz clock from internal 32kHz oscillator
 	RTC.PITINTCTRL = RTC_PI_bm; // enable periodic interrupt
-	RTC.PITCTRLA = RTC_PERIOD_CYC4096_gc | RTC_PITEN_bm;	// select interrupt period and enable PIT
+	RTC.PITCTRLA = RTC_PERIOD_CYC32768_gc | RTC_PITEN_bm;	// select interrupt period and enable PIT
 		
 	/* SLEEP MODE SETUP */	
 	sei(); // globally enable interrupts on the µC
