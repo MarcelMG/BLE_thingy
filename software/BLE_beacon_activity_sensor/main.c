@@ -36,7 +36,7 @@ ISR(PORTA_PORT_vect){
 	PORTA.INTFLAGS = PIN5_bm; // clear interrupt flag
 }
 
-// RTC PIT interrupt handler, wakes CPU from power-down sleep mode
+// RTC PIT interrupt handler, wakes CPU from power-down sleep mode. Occurs every 4s
 ISR(RTC_PIT_vect){
 	rtc_wakeup = true;
 	RTC.PITINTFLAGS = RTC_PI_bm;	// clear interrupt flag
@@ -87,7 +87,7 @@ int main(void)
 	
 	/* BLE BEACON SETUP */
 	RN4871_init();
-	RN4871_setup_beacon(640); // setup Beacon with 1s advertisement interval
+	RN4871_setup_beacon(6400); // setup Beacon with 10s advertisement interval
 	
 	/* ACCELEROMETER SETUP */
 	ADXL345_init();
