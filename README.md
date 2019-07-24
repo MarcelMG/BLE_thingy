@@ -18,7 +18,7 @@ An enclosure has been designed which can be 3D-printed.
 
 ![enclosure](https://raw.githubusercontent.com/MarcelMG/BLE_thingy/master/enclosure/enclosure.bmp)
 ![lid](https://raw.githubusercontent.com/MarcelMG/BLE_thingy/master/enclosure/lid.bmp)
-![enclosure_3dprint_picture](https://raw.githubusercontent.com/MarcelMG/BLE_thingy/master/enclosure/enclosure_3dprint_picture.bmp)
+![enclosure_3dprint_picture](https://raw.githubusercontent.com/MarcelMG/BLE_thingy/master/enclosure/enclosure_3dprint_picture.jpg)
 
 (c) 2019 Marcel Meyer-Garcia
 <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />This work (hardware and software) is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>. 
